@@ -118,3 +118,9 @@ table th {
     margin: 3px 0;
   }
 }
+
+.pagination {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+}

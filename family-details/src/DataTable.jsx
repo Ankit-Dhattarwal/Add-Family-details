@@ -5,11 +5,16 @@ const DataTable = () => {
   const [data, setData] = useState([]);
   const [editId, setEditId] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const outsideClick = useRef(false);
-
-  const filterdData = data.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const itemPerPage = 5;
+  const lastItem = currentPage * itemPerPage;
+  const indexOfFirstItem = lastItem - itemPerPage;
+  const filterdData = data
+    .filter((item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .slice(indexOfFirstItem, lastItem);
 
   useEffect(() => {
     if (!editId) return;
@@ -53,6 +58,10 @@ const DataTable = () => {
   };
 
   const handleDelete = (id) => {
+    if (filterdData.length === 1 && currentPage !== 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+
     const updatedList = data.filter((item) => item.id !== id);
     setData(updatedList);
   };
@@ -69,6 +78,10 @@ const DataTable = () => {
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
+  };
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -163,7 +176,22 @@ const DataTable = () => {
             ))}
           </tbody>
         </table>
-        <div className="paginaton"></div>
+        <div className="pagination">
+          {Array.from(
+            { length: Math.ceil(data.length / itemPerPage) },
+            (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => paginate(index + 1)}
+                style={{
+                  backgroundColor: currentPage === index + 1 && "lightgreen",
+                }}
+              >
+                {index + 1}
+              </button>
+            )
+          )}
+        </div>
       </div>
     </div>
   );
