@@ -16,6 +16,10 @@ const DataTable = () => {
   const filterdData = filteredItems.slice(indexOfFirstItem, lastItem);
 
   useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  useEffect(() => {
     if (!editId) return;
 
     let selectedItem = document.querySelectorAll(`[id="${editId}"]`);
